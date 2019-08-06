@@ -1,0 +1,15 @@
+regeneration:
+   potion: false
+   food: false
+settings:
+   pvp: true
+   recipesKnown: true
+   showHearts: true
+plugin:
+   updateCheck: false
+database:
+   enabled: false
+   host: localhost
+   port: 5432
+   user: user
+   password: password
