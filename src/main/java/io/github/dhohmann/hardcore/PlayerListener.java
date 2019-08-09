@@ -1,13 +1,21 @@
 package io.github.dhohmann.hardcore;
 
+import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Listens to various player events and sets the game mode of the involved
@@ -60,7 +68,7 @@ public class PlayerListener implements Listener {
 	 * 
 	 * @param event Event occurred when the player changes the game mode
 	 */
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerGameModeChangeEvent(PlayerGameModeChangeEvent event) {
 		if (event.getNewGameMode() == GameMode.SPECTATOR) {
 			return;
@@ -86,6 +94,35 @@ public class PlayerListener implements Listener {
 			player.setGameMode(GameMode.SPECTATOR);
 			player.setCollidable(false);
 			player.sendMessage("You are dead. You can only spectate!");
+		}
+	}
+
+	/**
+	 * Cancels regeneration of players if configured inside configuration.
+	 * 
+	 * @param e Regeneration event
+	 * @since 0.0.2
+	 */
+	@EventHandler
+	public void cancelRegenerationEvent(EntityRegainHealthEvent e) {
+		if (!(e.getEntity() instanceof Player)) {
+			return;
+		}
+		FileConfiguration config;
+		try {
+			Plugin plugin = Bukkit.getPluginManager().getPlugin("UltraHardcorePlugin");
+			config = plugin.getConfig();
+		} catch (Throwable ex) {
+			config = new YamlConfiguration();
+			Bukkit.getLogger().log(Level.WARNING, "An error occured in the player listener", ex);
+		}
+
+		if (e.getRegainReason() == RegainReason.EATING) {
+			e.setCancelled(config.getBoolean("regeneration.food", false));
+		}
+
+		if (e.getRegainReason() == RegainReason.MAGIC || e.getRegainReason() == RegainReason.MAGIC_REGEN) {
+			e.setCancelled(config.getBoolean("regeneration.potion", false));
 		}
 	}
 }
