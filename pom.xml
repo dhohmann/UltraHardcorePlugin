@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.dhohmann</groupId>
 	<artifactId>hardcore</artifactId>
-	<version>0.0.2</version>
+	<version>0.1.0</version>
 	<name>UltraHardcorePlugin</name>
 	<description>Plugin that provided an UltraHardcore mode for Bukkit and Spigot Servers</description>
 	<developers>
@@ -31,6 +31,11 @@
 			<artifactId>bukkit</artifactId>
 			<version>1.14.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>17.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
